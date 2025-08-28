@@ -1,0 +1,181 @@
+<html>
+  <head>
+    <title>Register</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <style>
+      body {
+        display: grid;
+        padding: 2rem;
+        gap: 1rem;
+        align-items: center;
+        max-width: 800px;
+        margin: 0 auto;
+        font: 500 100%/1.5 system-ui;
+      }
+
+      p {
+        color: black;
+      }
+
+      img {
+        max-width: 100%;
+        height: auto;
+      }
+      .body {
+        width: 70%;
+        margin: auto;
+      }
+      .container-header {
+        width: 100%;
+        background-color: #fffefb;
+        color: #040404;
+      }
+      .heading {
+        text-align: center;
+        margin: 0px !important;
+      }
+      .container-footer {
+        width: 100%;
+        background-color: #fffefb;
+        color: black;
+        text-align: center;
+      }
+      .copyRight {
+        text-align: center;
+        margin-bottom: 0px !important;
+      }
+      .website-btn {
+        width: 200px;
+        padding: 10px;
+        background-color: #fffefb;
+        border: 2px solid #fffefb;
+        color: #0a0a09 !important;
+        text-decoration: none;
+      }
+      .btn-para {
+        width: 100%;
+        margin: auto;
+        text-align: center;
+      }
+
+      .container-body {
+        background-color: #fffefb;
+        padding: 10px !important;
+      }
+      .row {
+        display: flex;
+      }
+
+      .column {
+        float: left;
+      }
+      .left {
+        width: 35%;
+      }
+
+      .right {
+        width: 26%;
+        padding-top: 30px;
+      }
+      .container {
+        text-align: center;
+        padding: 10px 10px 10px 150px;
+      }
+      .fa {
+        padding: 0px;
+        font-size: 30px;
+        width: 35px;
+        text-align: center;
+        text-decoration: none;
+        margin: 0px 10px;
+      }
+
+      .fa:hover {
+        opacity: 0.7;
+      }
+
+      .fa-facebook {
+        color: #000000;
+      }
+
+      .fa-twitter {
+        color: #000000;
+      }
+
+      .fa-google {
+        color: #000000;
+      }
+
+      .fa-linkedin {
+        color: #000000;
+      }
+
+      .fa-instagram {
+        color: #000000;
+      }
+      #footer-menu ul li {
+        display: inline-block;
+        margin: 5px;
+      }
+      #footer-menu ul li a {
+        font-size: 13px;
+        letter-spacing: 1px;
+        font-family: "Open Sans", sans-serif;
+        color: #000;
+      }
+
+      img.imgsocial {
+        width: 30px;
+        margin: 10px 10px 10px 10px;
+      }
+      img.imgsocialgoogle {
+        width: 40px;
+        margin: 10px 10px 10px 10px;
+      }
+
+      .button {
+        background-color: black;
+        border: none;
+        color: white !important;
+        padding: 10px 25px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container-fluid">
+      <div class="body">
+        <div class="container-header">
+          <h4 class="heading">Pricing List Calculator</h4>
+        </div>
+        <div class="container-body">
+          <p>Hello <%= email %></p>
+          <p>
+            You have been invited to join the Pricing List Calculator as a <%= position %> on the <%= team %> team in the <%= department %> department,
+            <!-- <a
+              href="http://localhost:5173/invite-form?email=<%= email %>&position=<%= position %>&token=<%= token %>"
+              >Register</a
+            > -->
+            <a
+              href="https://phpstack-1164607-4084914.cloudwaysapps.com/invite-form?email=<%= email %>&position=<%= position %>&name=<%= name %>&token=<%= token %>"
+              >Register</a
+            >
+            <!-- <a href="http://localhost:5173/invite-form?email=<%= email %>&position=<%= position %>&token=<%= token %>"
+              >Register</a
+            > -->
+            and then login into your account from the landing page.
+          </p>
+          <p>Thank You</p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

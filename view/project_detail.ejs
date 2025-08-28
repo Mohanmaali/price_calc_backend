@@ -1,0 +1,247 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta
+      name="generator"
+      content="PhpSpreadsheet, https://github.com/PHPOffice/PhpSpreadsheet"
+    />
+    <title>Untitled Spreadsheet</title>
+    <meta name="author" content="Bess12 | BESS" />
+    <meta name="title" content=<%= project_details.project_name %> />
+    <meta name="company" content="Microsoft Corporation" />
+    <style type="text/css">
+      body{
+        font-family:Arial, Helvetica, sans-serif;
+      }
+      .header {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: justify;
+        -ms-flex-pack: justify;
+            justify-content: space-between;
+}
+
+.left-section,
+.right-section {
+    
+        
+}
+
+.title {
+    -webkit-box-flex: 1;
+        -ms-flex: 1;
+            flex: 1;
+    text-align: center; /* To center align the title */
+}
+      .big-container{
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-pack: justify; 
+        -ms-flex-pack: justify; 
+        -webkit-justify-content: space-between;
+      }
+      .proj-detail {
+        width: 40%;
+        margin: 30px 0px 20px 0px;
+        font-size:xx-small;
+      }
+      .detail-inner {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        border: 1px solid;
+        padding: 4px 10px 4px 10px;
+      }
+      .guide {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        border: 1px solid;
+      }
+      .m0 {
+        width: 50%;
+        margin: 0px;
+      }
+      table, td, th {
+         border: 1px solid;
+      }
+      .guide-text{
+        /* font-weight: bold;  */
+        width: 50%; 
+        padding: 4px 10px 4px 10px
+      }
+      .not-available{
+        background-color: #f2ceef;
+      }
+      .partially-available{
+        background-color: #fbe2d5;
+      }
+      .available{
+        background-color: #b5e6a2;
+      }
+      .partially-delivered{
+        background-color: #ffff00;
+      }
+      .delivered{
+        background-color: #94dcf8;
+      }
+      .received-from-coating{
+        background-color: #8ed973;
+      }
+      .table-style{
+        text-align: center;
+        font-size:8px;
+        width: 100%;
+        background-color: rgb(231, 231, 231);
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="header">
+    <div class="left-section">
+        <img src="https://price-list-api.ibrcloud.com/uploads/BES.png" width="100" />
+    </div>
+    <div class="title">
+        <span style="font-size: 25px; text-decoration: underline; font-weight: bold;">
+            Material List
+        </span>
+    </div>
+    <div class="right-section">
+        <img src="https://price-list-api.ibrcloud.com/uploads/Vetromax.png" width="200" />
+    </div>
+</div>
+
+    <div class="big-container">
+      <div class="proj-detail">
+      <div class="detail-inner">
+        <p class="m0" style="font-weight: bold">Project Number</p>
+        <p class="m0"><%=project_details.project_number %></p>
+      </div>
+      <div class="detail-inner">
+        <p class="m0" style="font-weight: bold">Project Name</p>
+        <p class="m0"><%=project_details.project_name %></p>
+      </div>
+      <div class="detail-inner">
+        <p class="m0" style="font-weight: bold">Client Project Number</p>
+        <p class="m0"><%=project_details.client_project_number %></p>
+      </div>
+      <div class="detail-inner">
+        <p class="m0" style="font-weight: bold">CLIENT CONFIRMATION REF</p>
+        <p class="m0"><%=project_details.client_confirmation_number %></p>
+      </div>
+      <div class="detail-inner">
+        <p class="m0" style="font-weight: bold">Confirmation Date</p>
+        <p class="m0"><%=project_details.project_confirmationDate %></p>
+      </div>
+      <div class="detail-inner">
+        <p class="m0" style="font-weight: bold">Completion Date</p>
+        <p class="m0"><%=project_details.project_completionDate %></p>
+      </div>
+      <div class="detail-inner">
+        <p class="m0" style="font-weight: bold">City</p>
+        <p class="m0"><%= project_details.city %></p>
+      </div>
+      <div class="detail-inner">
+        <p class="m0" style="font-weight: bold">Country</p>
+        <p class="m0"><%= project_details.country %></p>
+      </div>
+      </div>
+      <div class="proj-detail">
+      <div class="guide not-available">
+        <p
+          class="m0 guide-text"
+        >
+          NOT AVAILABLE
+        </p>
+        <div class="m0"></div>
+      </div>
+      <div class="guide partially-available">
+        <p
+          class="m0 guide-text"
+          
+        >
+          PARTIALLY AVAILABLE
+        </p>
+        <div class="m0"></div>
+      </div>
+      <div class="guide available">
+        <p
+          class="m0 guide-text"
+          
+        >
+          AVAILABLE
+        </p>
+        <div class="m0"></div>
+      </div>
+      <!-- <div class="guide partially-delivered">
+        <p
+          class="m0 guide-text"
+          
+        >
+          PARTIALLY DELIVERED
+        </p>
+        <div class="m0"></div>
+      </div>
+      <div class="guide delivered">
+        <p
+          class="m0 guide-text"
+          
+        >
+          DELIVERED
+        </p>
+        <div class="m0"></div>
+      </div>
+      <div class="guide received-from-coating">
+        <p
+          class="m0 guide-text"
+        >
+          RECEIVED FROM COATING
+        </p>
+        <div class="" ></div>
+      </div> -->
+      </div>
+    </div>
+    
+    <table
+      class="table-style"
+    >
+      <tr>
+        <th>Drawing</th>
+        <th>Number</th>
+        <th>Description</th>
+        <th>System</th>
+        <th>Required</th>
+        <th>Delivered</th>
+        <th>Balance</th>
+        <th>Unit</th>
+        <th>Status</th>
+        <th>DN</th>
+        <th>ETA</th>
+        <th>NOTES</th>
+      </tr>
+      <% parts_detail.forEach(detail => { %>
+      <% var rowClass = ''; %>
+      <% if (detail.status == 'Not Available') { rowClass = 'not-available'; } else if (detail.status == 'Partially Available') { rowClass = 'partially-available'; } else if (detail.status == 'Available') { rowClass = 'available'; } else if (detail.status == 'Partially Delivered') { rowClass = 'partially-delivered'; }else if (detail.status == 'Delivered') { rowClass = 'delivered'; } else if (detail.status == 'Received From Coating') { rowClass = 'received-from-coating'; }%>
+      <tr class="<%= rowClass %>">
+        <td>
+          <img src=<%=detail.drawing %> width="80"/>
+          <td><%= detail.number %></td>
+          <td><%= detail.description %></td>  
+          <td><%= detail.system %></td>
+          <td><%= detail.required %></td>
+          <td><%= detail.delivered %></td>
+          <td><%= detail.balance %></td>
+          <td><%= detail.unit %></td>
+          <td><%= detail.status %></td>
+          <td><%= detail.dn %></td>
+          <td><%= detail.eta %></td>
+          <td><%= detail.notes %></td>
+      </tr>
+    <% }); %>
+    </table>
+  </body>
+</html>

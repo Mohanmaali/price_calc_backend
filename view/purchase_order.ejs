@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Procurement Document</title>
+    <!-- <link rel="stylesheet" href="styles.css"> -->
+    <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+  
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      background-color: #fff;
+      color: #333;
+      width: 100%;
+      height: 100%;
+      padding: 0;
+    }
+  
+    .container {
+      width: 100%; /* Full width */
+      max-width: 1600px; /* Restrict max-width for readability */
+      margin: 40px auto 0; /* Center the container and add space at the top (40px) */
+      padding: 0 20px; /* Small padding on the left and right */
+      background: #fff;
+    }
+  
+    header {
+      display: flex;
+      margin-bottom: 0;
+    }
+  
+    header p {
+      font-size: 14px;
+      margin: 0;
+      text-align: right;
+    }
+  
+    img {
+      max-width: 20%;
+    }
+  
+    .company-info {
+      margin-left: 0;
+      margin-top: 0;
+    }
+  
+    .details {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0;
+    }
+  
+    .details .address,
+    .details .project-details {
+      width: 48%;
+    }
+  
+    .details p {
+      margin: 0;
+    }
+  
+    .table-section {
+      overflow-x: auto;
+    }
+  
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 0;
+    }
+  
+    table th,
+    table td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: center;
+    }
+  
+    table th {
+      background-color: #f8f8f8;
+      /* font-weight: bold; */
+    }
+  
+    table img {
+      max-width: 250px;
+      height: auto;
+    }
+  
+    .addresstd p {
+      color: rgb(6, 132, 250);
+      font-size: 14px;
+      font-weight: 10px;
+      text-align: right;
+    }
+  
+    .my-gray-blue {
+      color: LightSteelBlue;
+      background-color: LightSteelBlue;
+      border: 1px solid LightSteelBlue;
+    }
+  
+    /* Ensure PDF page size and margin */
+    @page {
+      size: A3;
+      margin: 20mm; /* Add a slight margin for PDF output */
+    }
+  
+    @media print {
+        @page {
+          size: A3;
+        }
+        .footer {
+          position: fixed;
+          bottom: 0;
+          width: 100%;
+          text-align: center;
+          font-size: 12px;
+        }
+      }
+
+    body {
+      margin: 0;
+      padding: 0;
+    }
+  
+    .container {
+      width: 100%;
+      padding: 0 20px; /* Small padding on left and right */
+    }
+     @media print {
+      .page-break {
+        page-break-before: always;
+      }
+    }
+  </style>
+
+  </head>
+  <body>
+    <div class="container">
+      <table
+        style="width:117%; margin-bottom: 15px; border:none; border-collapse:collapse; margin-top: -40px;">
+        <tr>
+          <td style="width:260px;padding:0;vertical-align:top; border:none;">
+            <div style="width:100px; height: 200px;">
+              <img src="<%= organization?.org_logo %>"
+                alt=""  style="width: 200px; height: 80px; object-fit: contain;"/>
+            </div>
+          </td>
+          <td class="addresstd"
+            style="width:80px;padding:0; margin-right: 10px; vertical-align:top; border:none;  padding-left:425px;"
+            align="right">
+            <% if (organization && organization.address) { %>
+            <%
+            const normalizedAddress = organization.address.includes(",")
+            ? organization.address.split(", ").join("\n")
+            : organization.address;
+
+            const addressParts = normalizedAddress.split('\n');
+            %>
+            <% addressParts.forEach((line) => { %>
+            <p style="text-align: left; width: 350px; overflow-wrap: break-word;"><%= line.trim() %></p>
+            <% }) %>
+            <% } else { %>
+            <p>Address not available</p>
+            <% } %>
+
+            <p style="text-align: left;"><%= organization ? organization.email :
+              'N/A' %></p>
+            <p style="text-align: left;"><%= organization ? organization.website
+              : 'N/A' %></p>
+            <p style="text-align: left;">TRN:<%= organization ?
+              organization.tax_number : 'N/A' %></p>
+          </td>
+        </tr>
+      </table>
+
+      <table role="presentation"
+        style="width:133%;border:none;  border-collapse:collapse;">
+        <tr>
+          <td style="padding:0;width:20%; border:none; margin-left: 300px;"
+            align="left">
+            <table role="presentation"
+              style="width:50%;font-size: 12px;border: 1px solid #333333; border-collapse:collapse;">
+              <tr
+                style="height: 10px;border: 1px solid #616161; border-collapse:collapse;">
+                <td
+                  style="padding:0;width:8%; border:none; background-color: #adcced;">
+                  To
+                </td>
+                 <td style="padding:0;width:15%;border:none;">
+                  <%= supplier %>
+                  <hr style="border: none; border-top: 1px solid #616161; margin: 0;">
+                  <% if (supplier_detail && supplier_detail.length > 0) { %>
+                  <%= `${supplier_detail[0]?.company_address || ""}
+                  ${supplier_detail[0]?.company_city || ""} ${supplier_detail[0]?.company_state ||
+                  ""} ${supplier_detail[0]?.company_country || ""}` %>
+                  <% } %>
+                </td>
+              </tr>
+
+             <tr style="border: 1px solid #333333; border-collapse:collapse;">
+              <td style="padding:0;width:8%;border:none; background-color: #adcced;">
+                Attn
+              </td>
+              <td style="padding:0;width:20%; border:none;">
+                <%= selectedContact && selectedContact.length 
+                    ? selectedContact.map(contact => contact.name)
+                        .filter(name => name)
+                        .join(', ') 
+                    : 'N/A' %>
+              </td>
+            </tr>
+            <tr style="border: 1px solid #333333; border-collapse:collapse;">
+              <td style="padding:0;width:8%;border:none; background-color: #adcced;">
+                Email
+              </td>
+              <td style="padding:0;width:20%; border:none;">
+                <%= selectedContact && selectedContact.length 
+                    ? selectedContact.map(contact => contact.email)
+                        .filter(email => email)
+                        .join(', ') 
+                    : 'N/A' %>
+              </td>
+            </tr>
+            
+            <tr style="border: 1px solid #333333; border-collapse:collapse;">
+              <td style="padding:0;width:8%;border:none; background-color: #adcced;">
+                Tel
+              </td>
+              <td style="padding:0;width:20%; border:none;">
+                <%= selectedContact && selectedContact.length 
+                    ? selectedContact.map(contact => contact.landline)
+                        .filter(landline => landline)
+                        .join(', ') 
+                    : 'N/A' %>
+              </td>
+            </tr>           
+              <tr style="border: 1px solid #616161; border-collapse:collapse;">
+                <td
+                  style="padding:0;width:8%;border:none; background-color: #adcced;">
+                  TRN
+                </td>
+                <td style="padding:0;width:15%; border:none;">
+                  <%= supplier_trn %>
+                </td>
+              </tr>
+              <tr style="border: 1px solid #616161; border-collapse:collapse;">
+                <td
+                  style="padding:0;width:8%;border:none; background-color: #adcced;">
+                  Currency
+                </td>
+                <td style="padding:0;width:15%; border:none;">
+                  <%= supplier_currency %>
+                </td>
+              </tr>
+
+            </table>
+          </td>
+          <td style="padding:0;width:20%; margin-left: 10px; border:none;"
+            align="right">
+            <table role="presentation"
+              style="width:50%;font-size: 12px; text-align: center;border: 1px solid #333333; border-collapse:collapse;">
+              <tr style="border: 1px solid #333333; border-collapse:collapse;">
+                <tr
+                  style="border: 1px solid #333333; border-collapse:collapse;">
+                  <td
+                    style="padding:0;width:20%;border:none; background-color: #adcced;">
+                    Date
+                  </td>
+                  <td style="padding:0;width:20%;border:none;">
+                    <%= supplier_date %>
+                  </td>
+                </tr>
+                <tr style="border: 1px solid #333333; border-collapse: collapse;">
+                  <td rowspan="<%= selectedProject.length %>" style="padding: 0; width: 20%; border: none; background-color: #adcced;">
+                    Purchase For
+                  </td>
+                  <td style="padding: 0; width: 20%; border: none;">
+                    <%= purchaseFor %>
+                  </td>
+                </tr>
+                <% if (selectedProject && selectedProject.length > 0) { %>
+                  <tr style="border: 1px solid #333333; border-collapse: collapse;">
+                    <td rowspan="<%= selectedProject.length %>" style="padding: 0; width: 20%; border: none; background-color: #adcced;">
+                      Project
+                    </td>
+                    <td style="padding: 0; width: 20%; border: none;">
+                      <%= selectedProject[0].project_name %>
+                    </td>
+                  </tr>
+
+                  <% for (var i = 1; i < selectedProject.length; i++) { %>
+                    <tr style="border: 1px solid #333333; border-collapse: collapse;">
+                      <td style="padding: 0; width: 20%; border: none;">
+                        <%= selectedProject[i].project_name %>
+                      </td>
+                    </tr>
+                  <% } %>
+                <% } %>
+                <tr
+                  style="border: 1px solid #333333; border-collapse:collapse;">
+                  <td
+                    style="padding:0;width:20%;border:none; background-color: #adcced;">
+                    Inquiry Reference
+                  </td>
+                  <td style="padding:0;width:20%;border:none;">
+                    <span style="margin-right: 10px;"><%= inquiryRef %></span>
+                  </td>
+                </tr>
+                <tr
+                  style="border: 1px solid #333333; border-collapse:collapse;">
+                  <td
+                    style="padding:0;width:20%;border:none; background-color: #adcced;">
+                    Supplier QTN
+                  </td>
+                  <td style="padding:0;width:20%;border:none;">
+                    <span style="margin-right: 10px;"><%= supplier_qtn_ref
+                      %></span>
+                  </td>
+                </tr>
+                <tr
+                  style="border: 1px solid #333333; border-collapse:collapse;">
+                  <td
+                    style="padding:0;width:20%;border:none; background-color: #adcced;">
+                    Purchase Order Number
+                  </td>
+                  <td style="padding:0;width:20%;border:none;">
+                    <span style="margin-right: 10px;"><%= purchase_order_num
+                      %></span>
+                  </td>
+                </tr>
+                <tr
+                  style="border: 1px solid #333333; border-collapse:collapse;">
+                  <td
+                    style="padding:0;width:20%;border:none; background-color: #adcced;">
+                    Revision
+                  </td>
+                  <td style="padding:0;width:20%;border:none;">
+                    <%= revision %>
+                  </td>
+                </tr>
+              </table>
+            </td>
+
+          </tr>
+        </table>
+
+        <%
+        const accessor = parts.filter(item => item.type === "Accessory" ||
+        item.type === "Kit");
+        const otherTypeItems = parts.filter(item => item.type ===
+        "Non-Insulated Profile" || item.type === "Insulated Profile");
+        %>
+
+        <% if (
+          (accessor.length > 0 && freeFields[0]?.material !== undefined) ||
+          freeFields[0]?.material !== undefined ||
+          accessor.length > 0
+        ) { %>
+        <table
+          style="margin-top: 70px; border: 1px solid #333333; border-collapse: collapse; width: 100%; font-size: 12px; text-align: center;">
+          <thead>
+            <tr>
+              <th
+                style="border: 1px solid #333333; background-color: #adcced; padding: 4px;">No.</th>
+              <th
+                style="border: 1px solid #333333; background-color: #adcced; padding: 4px;">House
+                Code</th>
+              <th
+                style="border: 1px solid #333333; background-color: #adcced; padding: 4px;">Supplier
+                Code</th>
+              <th
+                style="border: 1px solid #333333; background-color: #adcced; padding: 4px;">Photo</th>
+              <th
+                style="border: 1px solid #333333; background-color: #adcced; padding: 4px;">Description</th>
+              <th
+                style="border: 1px solid #333333; background-color: #adcced; padding: 4px;">Material</th>
+              <th
+                style="border: 1px solid #333333; background-color: #adcced; padding: 4px;">Grade</th>
+              <th
+                style="border: 1px solid #333333; background-color: #adcced; padding: 4px;">Finish</th>
+              <th
+                style="border: 1px solid #333333; background-color: #adcced; padding: 4px;">Color</th>
+              <th
+                style="border: 1px solid #333333; background-color: #adcced; padding: 4px;">Unit
+                Weight</th>
+              <th
+                style="border: 1px solid #333333; background-color: #adcced; padding: 4px;">Total
+                Weight</th>
+              <th
+                style="border: 1px solid #333333; background-color: #adcced; padding: 4px;">Qty</th>
+              <th
+                style="border: 1px solid #333333; background-color: #adcced; padding: 4px;">Unit</th>
+              <th
+                style="border: 1px solid #333333; background-color: #adcced; padding: 4px;">Unit
+                Price</th>
+              <th
+                style="border: 1px solid #333333; background-color: #adcced; padding: 4px;">Total
+                Price</th>
+              <th
+                style="border: 1px solid #333333; background-color: #adcced; padding: 4px;">Delivery
+                Point</th>
+              <th
+                style="border: 1px solid #333333; background-color: #adcced; padding: 4px;">Remark</th>
+              <th
+                style="border: 1px solid #333333; background-color: #adcced; padding: 4px;">Received</th>
+              <th
+                style="border: 1px solid #333333; background-color: #adcced; padding: 4px;">ETA</th>
+              <!-- <th
+                style="border: 1px solid #333333; background-color: #adcced; padding: 4px;">Documents</th> -->
+            </tr>
+          </thead>
+          <tbody>
+            <% let combinedParts = [...parts, ...freeFields]; %>
+            <% combinedParts.forEach((part, index) => { %>
+            <tr>
+              <td style="border: 1px solid #333333;  font-size: 10px;   padding: 4px;"><%= index + 1
+                %></td>
+              <td style="border: 1px solid #333333;  font-size: 10px;   padding: 4px;"><%=
+                part?.code %></td>
+              <td style="border: 1px solid #333333;  font-size: 10px;   padding: 4px;"><%=
+                part?.supplier_code %></td>
+              <td style="border: 1px solid #333333; padding: 4px;">
+                <img src="<%= part.image %>" alt
+                  style="max-width: 40px; max-height: 40px;">
+              </td>
+              <td style="border: 1px solid #333333;  font-size: 10px;   padding: 4px;"><%=
+                part?.description %></td>
+              <td style="border: 1px solid #333333;  font-size: 10px;   padding: 4px;"><%=
+                part?.material %></td>
+              <td style="border: 1px solid #333333;  font-size: 10px;   padding: 4px;"><%=
+                part?.grade %></td>
+              <td style="border: 1px solid #333333;  font-size: 10px;   padding: 4px;"><%=
+                part?.finish %></td>
+              <td style="border: 1px solid #333333;  font-size: 10px;   padding: 4px;"><%=
+                part?.color %></td>
+              <td style="border: 1px solid #333333;  font-size: 10px;   padding: 4px;"><%=
+                part?.unit_weight %></td>
+              <td style="border: 1px solid #333333;  font-size: 10px;   padding: 4px;"><%=
+                part?.total_weight %></td>
+              <td style="border: 1px solid #333333;  font-size: 10px;   padding: 4px;"><%=
+                part.quantity %></td>
+              <td style="border: 1px solid #333333;  font-size: 10px;   padding: 4px;"><%=
+                part?.unit %></td>
+              <td style="border: 1px solid #333333;  font-size: 10px;   padding: 4px;"><%=
+                part.unit_price %></td>
+              <td style="border: 1px solid #333333;  font-size: 10px;   padding: 4px;"><%=
+                part.total_price %></td>
+              <td style="border: 1px solid #333333;  font-size: 10px;   padding: 4px;"><%=
+                part.delivery_point %></td>
+              <td style="border: 1px solid #333333;  font-size: 10px;   padding: 4px;"><%=
+                part?.remarks %></td>
+              <td style="border: 1px solid #333333;  font-size: 10px;   padding: 4px;"><%=
+                part?.received %></td>
+              <td style="border: 1px solid #333333;  font-size: 10px;   padding: 4px;">
+                <%= part?.eta %>
+              </td>
+              <!-- <td style="border: 1px solid #333333; padding: 4px;">
+                <img src="<%= part?.historyimage %>" alt
+                  style="max-width: 40px; max-height: 40px;">
+              </td> -->
+            </tr>
+            <% if ((index + 1) % 20 === 0) { %>
+            </table>
+            <div class="page-break"></div>
+            <table>
+          <% } %>
+            <% }) %>
+            <tr>
+              <td style="border:none;background-color: #adcced;"></td>
+              <td
+                style="border:none;background-color: #adcced;font-size: 12px;font-weight: bold;"></td>
+              <td style="border:none;background-color: #adcced;"></td>
+              <td style="border:none;background-color: #adcced;"></td>
+              <td style="border:none;background-color: #adcced;"></td>
+              <td style="border:none;background-color: #adcced;"></td>
+              <td style="border:none;background-color: #adcced;"></td>
+              <td style="border:none;background-color: #adcced;"></td>
+              <td style="border:none;background-color: #adcced;"></td>
+              <td
+                style="border: 1px solid #333333;background-color: #adcced;font-weight: bold;font-size: 14px;">Total</td>
+              <td
+                style="border: 1px solid #333333; background-color: #adcced;"><%=
+                totalWeight_total %></td>
+              <td
+                style="border: 1px solid #333333; background-color: #adcced;"><%=
+                quantity_total %></td>
+              <td
+                style="border: 1px solid #333333; background-color: #adcced;"></td>
+              <td
+                style="border: 1px solid #333333; background-color: #adcced;"></td>
+              <td
+                style="border: 1px solid #333333; background-color: #adcced;"><%=
+                totalPrice_total %></td>
+              <td
+                style="border: 1px solid #333333; background-color: #adcced;"></td>
+              <td
+                style="border: 1px solid #333333; background-color: #adcced;"></td>
+              <td
+                style="border: 1px solid #333333; background-color: #adcced;"></td>
+              <td
+                style="border: 1px solid #333333; background-color: #adcced;"></td>
+              <!-- <td
+                style="border: 1px solid #333333; background-color: #adcced;"></td> -->
+            </tr>
+
+          </tbody>
+        </table>
+        <% } else if ((otherTypeItems.length > 0 && freeFields[0]?.alloy !== undefined) ||
+        freeFields[0]?.alloy !== undefined ||
+        otherTypeItems.length > 0) { %>
+        <table
+          style="margin-top: 70px; border: 1px solid #333333; border-collapse: collapse; width: 100%; font-size: 12px; text-align: center;">
+          <thead>
+            <tr>
+              <th
+                style="border: 1px solid #333333; background-color: #adcced; padding: 4px;">No.</th>
+              <th
+                style="border: 1px solid #333333; background-color: #adcced; padding: 4px;">House
+                Code</th>
+              <th
+                style="border: 1px solid #333333; background-color: #adcced; padding: 4px;">Supplier
+                Code</th>
+              <th
+                style="border: 1px solid #333333; background-color: #adcced; padding: 4px;">Photo</th>
+              <th
+                style="border: 1px solid #333333; background-color: #adcced; padding: 4px;">Description</th>
+              <th
+                style="border: 1px solid #333333; background-color: #adcced; padding: 4px;">Alloy</th>
+              <th
+                style="border: 1px solid #333333; background-color: #adcced; padding: 4px;">Grade</th>
+              <th
+                style="border: 1px solid #333333; background-color: #adcced; padding: 4px;">Temper</th>
+              <th
+                style="border: 1px solid #333333; background-color: #adcced; padding: 4px;">Finish</th>
+              <th
+                style="border: 1px solid #333333; background-color: #adcced; padding: 4px;">Length</th>
+              <th
+                style="border: 1px solid #333333; background-color: #adcced; padding: 4px;">Qty</th>
+              <th
+                style="border: 1px solid #333333; background-color: #adcced; padding: 4px;">Unit
+                Weight</th>
+              <th
+                style="border: 1px solid #333333; background-color: #adcced; padding: 4px;">Total
+                Weight</th>
+              <th
+                style="border: 1px solid #333333; background-color: #adcced; padding: 4px;">Unit</th>
+              <th
+                style="border: 1px solid #333333; background-color: #adcced; padding: 4px;">Unit
+                Price</th>
+              <th
+                style="border: 1px solid #333333; background-color: #adcced; padding: 4px;">Total
+                Price</th>
+              <th
+                style="border: 1px solid #333333; background-color: #adcced; padding: 4px;">Delivery
+                Point</th>
+              <th
+                style="border: 1px solid #333333; background-color: #adcced; padding: 4px;">Remark</th>
+              <th
+                style="border: 1px solid #333333; background-color: #adcced; padding: 4px;">Received</th>
+              <th
+                style="border: 1px solid #333333; background-color: #adcced; padding: 4px;">ETA</th>
+              <!-- <th
+                style="border: 1px solid #333333; background-color: #adcced; padding: 4px;">Documents</th> -->
+            </tr>
+          </thead>
+          <tbody>
+            <% let combinedParts = [...parts, ...freeFields]; %>
+            <% combinedParts.forEach((part, index) => { %>
+            <tr>
+              <td style="border: 1px solid #333333; font-size: 10px; padding: 4px;"><%= index + 1
+                %></td>
+              <td style="border: 1px solid #333333; font-size: 10px; padding: 4px;"><%=
+                part?.code %></td>
+              <td style="border: 1px solid #333333; font-size: 10px; padding: 4px;"><%=
+                part?.supplier_code %></td>
+              <td style="border: 1px solid #333333; padding: 4px;">
+                <img src="<%= part.image %>" alt
+                  style="max-width: 40px; max-height: 40px;">
+              </td>
+              <td style="border: 1px solid #333333; font-size: 10px; padding: 4px;"><%=
+                part?.description %></td>
+              <td style="border: 1px solid #333333; font-size: 10px; padding: 4px;"><%=
+                part?.alloy %></td>
+              <td style="border: 1px solid #333333; font-size: 10px; padding: 4px;"><%=
+                part?.grade %></td>
+              <td style="border: 1px solid #333333; font-size: 10px; padding: 4px;"><%=
+                part?.temper %></td>
+              <td style="border: 1px solid #333333; font-size: 10px; padding: 4px;"><%=
+                part?.finish %></td>
+              <td style="border: 1px solid #333333; font-size: 10px; padding: 4px;"><%=
+                part?.length %></td>
+              <td style="border: 1px solid #333333; font-size: 10px; padding: 4px;"><%=
+                part.quantity %></td>
+              <td style="border: 1px solid #333333; font-size: 10px; padding: 4px;"><%=
+                part?.unit_weight %></td>
+              <td style="border: 1px solid #333333; font-size: 10px; padding: 4px;"><%=
+                part?.total_weight %></td>
+              <td style="border: 1px solid #333333; font-size: 10px; padding: 4px;"><%=
+                part?.unit %></td>
+              <td style="border: 1px solid #333333; font-size: 10px; padding: 4px;"><%=
+                part.unit_price %></td>
+              <td style="border: 1px solid #333333; font-size: 10px; padding: 4px;"><%=
+                part.total_price %></td>
+              <td style="border: 1px solid #333333; font-size: 10px; padding: 4px;"><%=
+                part.delivery_point %></td>
+              <td style="border: 1px solid #333333; font-size: 10px; padding: 4px;"><%=
+                part?.remarks %></td>
+              <td style="border: 1px solid #333333; font-size: 10px; padding: 4px;"><%=
+                part?.received %></td>
+              <td style="border: 1px solid #333333; font-size: 10px; padding: 4px;">
+                <%= part?.eta %>
+              </td>
+              <!-- <td style="border: 1px solid #333333; padding: 4px;">
+                <img src="<%= part?.historyimage %>" alt
+                  style="max-width: 40px; max-height: 40px;">
+              </td> -->
+            </tr>
+            <% if ((index + 1) % 20 === 0) { %>
+            </table>
+            <div class="page-break"></div>
+            <table>
+          <% } %>
+            <% }) %>
+            <tr>
+              <td style="border: none;background-color: #adcced;"></td>
+              <td
+                style="border: none;background-color: #adcced;font-size: 12px;font-weight: bold;"></td>
+              <td style="border: none;background-color: #adcced;"></td>
+              <td style="border: none;background-color: #adcced;"></td>
+              <td style="border: none;background-color: #adcced;"></td>
+              <td style="border: none;background-color: #adcced;"></td>
+              <td style="border: none;background-color: #adcced;"></td>
+              <td style="border: none;background-color: #adcced;"></td>
+              <td style="border: none; background-color: #adcced;"></td>
+              <td
+                style="border: none;background-color: #adcced;font-weight: bold;font-size: 14px;">Total</td>
+              <td
+                style="border: 1px solid #333333;background-color: #adcced;"><%=
+                quantity_total %> </td>
+              <td
+                style="border: 1px solid #333333; background-color: #adcced;"></td>
+              <td
+                style="border: 1px solid #333333; background-color: #adcced;"><%=
+                totalWeight_total %></td>
+              <td
+                style="border: 1px solid #333333;background-color: #adcced;"></td>
+              <td
+                style="border: 1px solid #333333;background-color: #adcced;"></td>
+              <td
+                style="border: 1px solid #333333; background-color: #adcced;"><%=
+                totalPrice_total %></td>
+              <td
+                style="border: 1px solid #333333; background-color: #adcced;"></td>
+              <td
+                style="border: 1px solid #333333; background-color: #adcced;"></td>
+              <td
+                style="border: 1px solid #333333; background-color: #adcced;"></td>
+              <td
+                style="border: 1px solid #333333; background-color: #adcced;"></td>
+              <!-- <td
+                style="border: 1px solid #333333; background-color: #adcced;"></td> -->
+            </tr>
+
+          </tbody>
+        </table>
+        <% } %>
+
+        <div style="margin-top: 50px; width: 100%; page-break-inside: avoid;">
+           <table style="border: none;">
+            <tr>
+              <td  style="border: none;">
+                <div style="padding-right: 10px; text-align: left; font-size: 15px; font-weight: 600px;">Payment Terms</div>
+            <table role="presentation"
+              style="width:80%;border: 1px solid #333333; margin-top: 2px;  border-collapse:collapse;">
+              <% payments.forEach((part, index) => { %>
+              <tr>
+                <td
+                  style="padding:0;width:50%; text-align: center; margin-left: 10px; border: 1px solid #333333;"
+                  align="right">
+                  <p style="margin-left: 6px; font-size: 15px;">
+                    <%= part.title %>
+                  </p>
+                </td>
+                <td
+                  style="padding:0;width:10%; background-color: #adcced; font-weight: 400; border: 1px solid #333333;; margin-left: 300px;"
+                  align="left">
+                  <%= part.val %>%
+                </td>
+                <td
+                  style="padding:0;width:10%; background-color: #adcced; font-weight: 400; border: 1px solid #333333;; margin-left: 300px;"
+                  align="left">
+                  <%= part.amount %>
+                </td>
+                <td
+                  style="padding:0;width:10%; background-color: #adcced; font-weight: 400; border: 1px solid #333333;; margin-left: 300px;"
+                  align="left">
+                  <%= part.paydate %>
+                </td>
+              </tr>
+              <% }) %>
+            </table>
+          </td>
+        
+          <td  style="border: none;">
+              <table style="border: none; width: 40%; margin-left: 60%;">
+                <tr>
+                  <td style=" font-size: 12px; background-color: #adcced; border: 1px solid #333333; text-align: center;">Total</td>
+                  <td
+                    style=" width: 15%; border: 1px solid #333333;  font-size: 12px; text-align: center;"><%=
+                    totalPrice_total %></td>
+                </tr>
+                <tr>
+                  <td style=" font-size:12px; text-align: center; border: 1px solid #333333; background-color: #adcced;">VAT(<%= vat %>%)</td>
+                  <td
+                    style=" width: 15%; text-align: center; border: 1px solid #333333;  font-size: 12px;"><%=
+                    percentage_of_vat %></td>
+                </tr>
+                <tr>
+                  <td
+                    style="text-align: center; border: 1px solid #333333; width: 12%; font-size: 12px; background-color: #adcced;">GrandTotal</td>
+                  <td
+                    style=" width: 10%; border: 1px solid #333333; font-size: 12px; text-align: center;"><%=
+                    grandTotal %> <%= supplier_currency %></td>
+                </tr>
+              </table>
+            </td>
+            </tr>
+            </table>
+            </div>
+
+          <div
+          style="width: 100%; margin-top: 50px; align-items: start; margin-left: 5px;">
+          <% if (remark && remark.trim() !== "") { %>
+            <div style= "font-size: 12px; font-weight: 300; white-space: normal; word-break: break-word;">
+              <span style="font-weight: 300;">Remark:</span> <span><%= remark %></span>
+            </div>            
+          <% } else { %>
+          
+          <% } %>
+        </div>
+
+
+        <!-- <table role="presentation" style="border:none; margin-top: 30px; border-collapse:collapse; font-size: 12px;" align="left">
+          <tr>
+            <td style="padding:0; border:none; text-align: left;">
+              Reference Code Rev: <%= ref_code_rev %>
+            </td>
+           
+            <td style= "border:none; text-align: right;">
+              <p>Form Rev Date: <%= form_rev_date %></p>
+            </td>
+            
+          </tr>
+        </table> -->
+
+      </div>
+    </body>
+  </html>
