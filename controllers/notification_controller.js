@@ -375,7 +375,7 @@ const marksAllAsReadRealtedToUser = async (req, res) => {
 };
 
 // Task CRUD
-
+ 
 const getTaskByUserId = async (req, res) => {
   try {
     const { userId } = req.params;
@@ -462,11 +462,13 @@ const getTaskByUserId = async (req, res) => {
         }
       },
 
-
       {
         $addFields: {
           "assignments.departmentId": "$departmentDetails",
-          "assignments.employees": "$employeeDetails"
+          "assignments.employees": "$employeeDetails",
+          "assignments.dueDate": "$dueDate",
+          "assignments.remark": "$remark",
+          "assignments.actionRequired": "$actionRequired"
         }
       },
 
@@ -512,9 +514,7 @@ const getTaskByUserId = async (req, res) => {
       message: error?.message,
     });
   }
-};
-
-
+}; 
 
 const getTaskByCommonId = async (req, res) => {
   try {
@@ -524,23 +524,19 @@ const getTaskByCommonId = async (req, res) => {
     if (id) {
       matchCondition["commonId"] = id;
     }
-
     const tasks = await Task_model.aggregate([
       { $match: matchCondition },
       {
         $lookup: {
           from: "user_models",
-          localField: "createdBy",
+          localField: "createdBy", 
           foreignField: "_id",
-          pipeline: [{ $project: { _id: 1, name: 1 } }],
-          as: "createdBy"
-        }
-      },
+          pipeline: [{ $project: { _id: 1, name: 1 } }], 
+          as: "createdBy"  
+        } 
+      },   
       { $unwind: "$createdBy" },
-
-      { $unwind: "$assignments" },
-
-
+      { $unwind: "$assignments" },  
       {
         $lookup: {
           from: "departments",
@@ -548,10 +544,10 @@ const getTaskByCommonId = async (req, res) => {
           foreignField: "_id",
           pipeline: [{ $project: { _id: 1, name: 1 } }],
           as: "department"
-        }
+        } 
       },
-      { $unwind: { path: "$department", preserveNullAndEmptyArrays: true } },
 
+      { $unwind: { path: "$department", preserveNullAndEmptyArrays: true } },
 
       {
         $lookup: {
@@ -562,7 +558,6 @@ const getTaskByCommonId = async (req, res) => {
           as: "employees"
         }
       },
-
       {
         $lookup: {
           from: "project_inquiry_models",
@@ -572,16 +567,14 @@ const getTaskByCommonId = async (req, res) => {
             {
               $project: {
                 project_name: 1,
-
               }
             }
-
           ],
           as: "projectInquiryId",
-        },
-      },
+        }, 
+      },   
       { $unwind: { path: "$projectInquiryId", preserveNullAndEmptyArrays: true } },
-      {
+      {  
         $addFields: {
           projectInquiryName: {
             $cond: [
@@ -604,26 +597,28 @@ const getTaskByCommonId = async (req, res) => {
           createdBy: { $first: "$createdBy" },
           remark: { $first: "$remark" },
           projectInquiryId: { $first: "$projectInquiryId" },
-          actionRequired: { $first: "$actionRequired" },
+          actionRequired: { $first: "$actionRequired" }, 
           description: { $first: "$description" },
           assignments: {
             $push: {
               department: "$department",
-              employees: "$employees"
+              employees: "$employees",
+              actionRequired: "$actionRequired",
+              remark: "$remark",
+              dueDate: "$dueDate",
             }
           }
         }
       },
     ]);
-
-
+     
+    
     if (!tasks.length) {
       return res.status(400).json({
         success: true,
         message: "Task not found",
       });
     }
-
     return res.status(200).json({
       success: true,
       message: "Successfully got tasks",
@@ -636,7 +631,6 @@ const getTaskByCommonId = async (req, res) => {
     });
   }
 };
-
 
 const createTaskOld = async (req, res) => {
   try {
@@ -721,96 +715,107 @@ const createTaskOld = async (req, res) => {
 
 const updateTask = async (req, res) => {
   try {
+
+
+
     const { commonId } = req.params;
+
     const {
       title,
       projectInquiryId = undefined,
       category,
-      details,
-      actionRequired,
-      dueDate,
-      remark,
-      type,
+      details, 
+      type, 
       description,
       assignments,
       previousAssignUserReply
     } = req.body;
     const createdBy = req.user?.id || req.admin?._id;
-    let newTasks;
-
-    
-  
+    let newTasks; 
     if (req?.body?.updateType === "reassign") {
-      let docsToInsert = [];
+      let docsToInsert = []; 
       await Task_model.deleteMany({ commonId });
       const newCommonId = uuidv4();
-      assignments.forEach(assign => {
+    
+      assignments.forEach(assign => { 
         assign.employees.forEach(empId => {
           docsToInsert.push({
             commonId: newCommonId,
             projectInquiryId: projectInquiryId || null,
             category,
             details,
-            actionRequired,
-            remark,
-            type,
+            type, 
             title,
-            description,
-            dueDate,
+            description,  
             createdBy,
+            dueDate: assign?.dueDate,
+            actionRequired: assign?.actionRequired || '',
+            remark: assign?.remark,
             assignments: [
               {
                 departmentId: assign.departmentId,
                 employees: [empId, createdBy]
-              }
+              },
+              
             ],
             previousAssignUserReply
           });
-        });
-      }); 
-
-      
+        });  
+      });
       newTasks = await Task_model.insertMany(docsToInsert);
       return res.json({
         message: "Task reassigned successfully",
-        newTasks
+        newTasks 
       });
-    } else {
-      newTasks = await Task_model.updateMany(
-        { commonId },
+    } else { 
+      const globalSet = {
+        projectInquiryId: projectInquiryId || null,
+        category,
+        details,
+        type,
+        title,
+        description,
+        previousAssignUserReply
+      };
+      
+      const ops = [
         {
-          $set: {
-            projectInquiryId: projectInquiryId || null,
-            category,
-            details,
-            actionRequired,
-            remark,
-            type,
-            title,
-            description,
-            dueDate,
-            // assignments,
-            previousAssignUserReply
+          updateMany: {
+            filter: { commonId },
+            update: { $set: globalSet }
           }
-        },
-        { new: true }
-      );
-      return res.json({
-        message: "Task updated successfully",
-        newTasks
-      });
+        }
+      ];
+       
+      if (Array.isArray(assignments)) {
+        assignments.forEach(assign => {
+          ops.push({
+            updateMany: {
+              filter: {
+                commonId,
+                "assignments.departmentId": assign.departmentId
+              },
+              update: {
+                $set: {
+                  dueDate: assign?.dueDate,
+                  actionRequired: assign?.actionRequired || '',
+                  remark: assign?.remark
+                }
+              }
+            }
+          });
+        });
+      }
+      await Task_model.bulkWrite(ops);
+      return res.json({ message: "Task updated successfully" });
     }
-  
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Something went wrong" });
   }
 }
-
-
 const createTask = async (req, res) => {
   try {
-
     const {
       title,
       projectInquiryId = undefined,
@@ -834,13 +839,13 @@ const createTask = async (req, res) => {
           projectInquiryId: projectInquiryId || null,
           category,
           details,
-          actionRequired,
-          remark,
           type,
           title,
           description,
-          dueDate,
           createdBy,
+          actionRequired: assign?.actionRequired || "",
+          remark: assign?.remark || '',
+          dueDate: assign.dueDate,
           assignments: [
             {
               departmentId: assign.departmentId,
@@ -852,7 +857,6 @@ const createTask = async (req, res) => {
       });
     });
     const savedTasks = await Task_model.insertMany(docsToInsert);
-
     res.status(201).json({
       success: true,
       message: "Tasks created successfully",
@@ -866,6 +870,7 @@ const createTask = async (req, res) => {
 };
 
 const getCommonTask = async (req, res) => {
+
   try {
     const { userId } = req.params;
     const { page = 1, limit = 10, departmentId, userfilterid, search } = req.query;
@@ -907,9 +912,7 @@ const getCommonTask = async (req, res) => {
         }
       },
       { $unwind: "$createdBy" },
-
       { $unwind: "$assignments" },
-
 
       {
         $lookup: {
@@ -921,8 +924,6 @@ const getCommonTask = async (req, res) => {
         }
       },
       { $unwind: { path: "$department", preserveNullAndEmptyArrays: true } },
-
-
       {
         $lookup: {
           from: "user_models",
@@ -1002,7 +1003,6 @@ const getCommonTask = async (req, res) => {
     });
   } catch (err) {
     console.error(err);
-
     res.status(500).json({ error: "Something went wrong" });
   }
 }
@@ -1018,6 +1018,7 @@ const deleteTaskBycommonId = async (req, res) => {
     if (result.deletedCount === 0) {
       return res.status(404).json({ success: false, message: "No tasks found with this commonId" });
     }
+
     return res.status(200).json({
       success: true,
       message: `${result.deletedCount} tasks deleted successfully`,

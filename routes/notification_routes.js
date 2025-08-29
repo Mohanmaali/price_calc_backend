@@ -41,7 +41,7 @@ Router.route("/common/:userId")
  
 Router.route("/common/mark-all-read/:userId").put(marksAllAsReadRealtedToUser);
  
-// For Task Assigned
+// For Task Assigned  
 // Router.route("/task/").post(createTask);
 Router.route("/task/").post(auth,createTask); 
 Router.route("/task/reassign/:commonId").post(auth,updateTask); 

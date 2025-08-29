@@ -11,11 +11,12 @@ const task = new mongoose.Schema({
     type: String
   },
 
+  
   projectInquiryId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'InquiryType'
-  }
-  ,
+  },
+
   users: [
     {
       type: mongoose.Schema.Types.ObjectId,
@@ -30,7 +31,6 @@ const task = new mongoose.Schema({
 
   details: {
     type: String,
-    required: true,
   },
   remark: {
     type: String,
@@ -48,22 +48,6 @@ const task = new mongoose.Schema({
     type: String,
   },
   description: { type: String, },
-
-  // departments: [
-  //   {
-  //     departmentId: {
-  //       type: mongoose.Schema.Types.ObjectId,
-  //       ref: 'Department',
-  //       required: true,
-  //     },
-  //     employees: [
-  //       {
-  //         type: mongoose.Schema.Types.ObjectId,
-  //         ref: 'User_model',
-  //       }
-  //     ]
-  //   }
-  // ],
 
   assignments: [
     {

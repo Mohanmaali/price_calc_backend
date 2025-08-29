@@ -90,15 +90,15 @@
 
 // module.exports = User_model;
 
-const mongoose = require("mongoose");
+const mongoose = require("mongoose"); 
 
 const user_schema = new mongoose.Schema(
   {
     salutation: {
       type: String,
       trim: true,
-    },
-    name: {               // firstName
+    }, 
+    name: {              
       type: String,
       required: true,
       trim: true,
@@ -107,7 +107,7 @@ const user_schema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true,
-    },
+    }, 
     email: {
       type: String,
       required: true,

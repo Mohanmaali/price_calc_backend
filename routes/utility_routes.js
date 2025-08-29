@@ -27,7 +27,7 @@ Router.route("/kit/get-filter").get(auth, get_kit_filter);
 
 //stock
 Router.route("/stock/get-filter").get(auth, get_stock_filter_data);
-
+ 
 //Task
 Router.route("/task/get-filter/:userId").get(auth, get_task_filter);
 
