@@ -11,16 +11,16 @@ const {
   updateNotification,
   getAccessibleNotifications,
   deleteNotification,
-  getTaskByUserId,
   marksAllAsReadRealtedToUser,
   createTask,
   getTaskByCommonId,
   updateTask,
-  getCommonTask,
+  getCommonTaskByUserId,
   deleteTaskBycommonId,
 } = require("../controllers/notification_controller");
 const auth = require("../middleware/auth");
 const role_auth = require("../middleware/role_auth");
+const upload = require("../middleware/photo_middleware");
 
 // for notification
 
@@ -35,18 +35,18 @@ Router.route("/").post(addNotification);
 
 // Route for '/:id'
 Router.route("/common/:userId")
-  .get(getAccessibleNotifications) 
+  .get(getAccessibleNotifications)
   .put(updateNotification)
-  .delete(deleteNotification);
- 
+  .delete(deleteNotification); 
+  
 Router.route("/common/mark-all-read/:userId").put(marksAllAsReadRealtedToUser);
- 
+
 // For Task Assigned  
 // Router.route("/task/").post(createTask);
-Router.route("/task/").post(auth,createTask); 
-Router.route("/task/reassign/:commonId").post(auth,updateTask); 
+Router.route("/task/").post(auth, upload.any(), createTask);
+Router.route("/task/reassign/:commonId").post(auth, upload.any(), updateTask);
 
-Router.route("/task/:userId").get(getCommonTask);
-Router.route("/task/:id/byid").get(getTaskByCommonId);
-Router.route("/task/:commonId").delete(auth,deleteTaskBycommonId); 
-module.exports = Router;
+Router.route("/task/:userId").get(getCommonTaskByUserId);
+Router.route("/task/:id/byid").get(auth, getTaskByCommonId);
+Router.route("/task/:commonId").delete(auth, deleteTaskBycommonId);
+module.exports = Router; 

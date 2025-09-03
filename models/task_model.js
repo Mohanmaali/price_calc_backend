@@ -1,22 +1,22 @@
 const mongoose = require("mongoose");
+const upload = require("../middleware/photo_middleware");
 
 const task = new mongoose.Schema({
   commonId: { type: String, required: true },
   type: {
     type: String,
-    required: true,
   },
 
   title: {
     type: String
   },
 
-  
+
   projectInquiryId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'InquiryType'
   },
-
+ 
   users: [
     {
       type: mongoose.Schema.Types.ObjectId,
@@ -44,8 +44,11 @@ const task = new mongoose.Schema({
     default: "Active",
   },
 
+    
+  
   category: {
     type: String,
+    require: true,
   },
   description: { type: String, },
 
@@ -64,6 +67,9 @@ const task = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User_model",
   },
+
+
+
   previousAssignUserReply: [
     {
       departmentId: { type: mongoose.Schema.Types.ObjectId, ref: "Department" },
@@ -71,7 +77,19 @@ const task = new mongoose.Schema({
       reply: { type: String },
       repliedAt: { type: Date, default: Date.now }
     }
+  ],
+
+
+  files: [
+    {
+      originalname: { type: String },
+      filename: { type: String },
+      path: { type: String },
+      url: { type: String },
+      uploadedAt: { type: Date, default: Date.now }
+    }
   ]
+
 
 }, {
   timestamps: true
